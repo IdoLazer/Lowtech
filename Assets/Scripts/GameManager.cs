@@ -6,182 +6,116 @@ using System;
 public class GameManager : MonoBehaviour
 {
 
-    public Loop curLoop;
-    public bool record;
-    public AudioManager audioManager;
-    public GameObject dancerPrefab;
+    public WaveManager waveManager;
+    public GameObject playerPrefab;
+    public GameObject startCanvas;
+    public GameObject gameBoard;
+    public GameObject winCanvas;
+    public GameObject loseCanvas;
+    public MusicPlayer musicPlayer;
+    public UnityEngine.Events.UnityEvent gameEndedEvent;
 
-    private bool IsTimerOn;
-    private float lastTimeAdded;
-    private List<Loop> PlayerLoops;
-    private float dancerLength;
-    private const int SCREEN_HEIGHT = 18;
-    private const int SCREEN_WIDTH = 32;
-    private List<Vector2> availableLocations;
-    private GameObject curDancer;
+    private int state = 0;
+    private PlayerController playerController;
 
-
-    void Start()
+    void Awake()
     {
-        CreateLocations();
-        PlayerLoops = new List<Loop>();
-        record = false;
-        curLoop = null;
-    }
-
-    private void CreateLocations()
-    {
-        availableLocations = new List<Vector2>();
-        for (int i = 1; i < SCREEN_HEIGHT - 1; i++)
-            for (int j = 1; j < SCREEN_WIDTH - 1; j++)
-            {
-                if (i%3 == 0 && j%3 == 0)
-                {
-                    availableLocations.Add(new Vector2(j, i));
-                }
-            }
+        gameEndedEvent = new UnityEngine.Events.UnityEvent();
+        startCanvas.SetActive(true);
+        gameBoard.SetActive(false);
+        winCanvas.SetActive(false);
+        loseCanvas.SetActive(false);
+        waveManager.Init();
+        waveManager.pulseFinishedEvent.AddListener(OnPulseFinished);
     }
 
     void Update()
     {
-        // Space key - if not recording, start recording, if recording, stop recording and start playing loop.
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Escape))
         {
-            if (!record)
-            {
-                if (curLoop == null)
-                {
-                    curLoop = new Loop();
-                }
-                CreateNewDancer();
-                record = true;
-                lastTimeAdded = Time.time;
-            }
-            else
-            {
-                record = false;
-                // If the player created a new loop, insert it to the other loops list and reset curLoop.
-                if (curLoop != null && curLoop.sounds.Count > 0)
-                {
-                    curLoop.timeGap.Add(Time.time - lastTimeAdded);
-                    PlayerLoops.Add(curLoop);
-                    StartCoroutine(PlayLoop(curLoop));
-                    curLoop = null;
-                }
-            }
+            Application.Quit();
         }
-
-        if (record)
-        // Add one sound to the recorded loop.
+        switch (state)
         {
-            // Adding the sound element accourding to the choice of the player.
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                AddSoundToCurLoop("Element2");
-                curLoop.moves.Add(Vector2.up);
-                MoveDancer(curDancer, curLoop.location, Vector2.up);
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                AddSoundToCurLoop("Element3");
-                curLoop.moves.Add(Vector2.down);
-                MoveDancer(curDancer, curLoop.location, Vector2.down);
-            }
-
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                AddSoundToCurLoop("Element4");
-                curLoop.moves.Add(Vector2.left);
-                MoveDancer(curDancer, curLoop.location, Vector2.left);
-            }
-
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                AddSoundToCurLoop("Element5");
-                curLoop.moves.Add(Vector2.right);
-                MoveDancer(curDancer, curLoop.location, Vector2.right);
-            }
-
-            return;
+            case 0: StartScreen();
+                break;
+            case 1: GameOn();
+                break;
+            case 2: EndScreen();
+                break;
+            default:
+                break;
         }
-
-        // "If" conditions to make unrecorded sounds:
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            Debug.Log("up");
-            GetSound("Element2").Play();
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            Debug.Log("down");
-            GetSound("Element3").Play();
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            Debug.Log("left");
-            GetSound("Element4").Play();
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            Debug.Log("right");
-            GetSound("Element5").Play();
-        }
-
     }
 
-    private void MoveDancer(GameObject dancer, Vector2 originalPos, Vector2 direction)
+    private void EndScreen()
     {
-        StartCoroutine(MoveDancerCoroutine(dancer, originalPos, direction));
-    }
-
-    private IEnumerator MoveDancerCoroutine(GameObject dancer, Vector2 originalPos, Vector2 direction)
-    {
-        dancer.transform.position = originalPos + direction;
-        yield return new WaitForSeconds(0.3f);
-        dancer.transform.position = originalPos;
-    }
-
-    private void CreateNewDancer()
-    {
-        int index = UnityEngine.Random.Range(0, availableLocations.Count - 1);
-        Vector2 newDancerLocation = availableLocations[index];
-        availableLocations.RemoveAt(index);
-        curDancer = Instantiate(dancerPrefab, newDancerLocation, Quaternion.identity) as GameObject;
-        curLoop.dancer = curDancer;
-        curLoop.location = newDancerLocation;
-    }
-
-    private void AddSoundToCurLoop(string name)
-    {
-        Sound s = GetSound(name);
-        s.Play();
-        curLoop.sounds.Add(s);
-        curLoop.timeGap.Add(Time.time - lastTimeAdded);
-        lastTimeAdded = Time.time;
-    }
-
-    private IEnumerator PlayLoop(Loop loop)
-    {
-        int numOfSounds = loop.sounds.Count;
-        while(true)
+        if (Input.GetKey(KeyCode.Return))
         {
-            for(int i = 0; i < numOfSounds; i++)
-            {
-                yield return new WaitForSeconds(loop.timeGap[i]);
-                MoveDancer(loop.dancer, loop.location, loop.moves[i]);
-                loop.sounds[i].Play();
-            }
-            yield return new WaitForSeconds(loop.timeGap[numOfSounds]);
+            winCanvas.SetActive(false);
+            loseCanvas.SetActive(false);
+            StartGame();
         }
     }
 
-    // Get Sound from AudioManager according to it's name.
-    Sound GetSound(string soundName)
+    private void GameOn()
     {
-        return Array.Find(audioManager.Sounds, Sound => Sound.name == soundName);
+        if (playerController.health <= 0)
+        {
+            StopGame();
+        }
     }
 
+    private void StopGame()
+    {
+        waveManager.StopGame();
+        gameBoard.SetActive(false);
+        Destroy(playerController.gameObject);
+        state = 2;
+        gameEndedEvent.Invoke();
+        if (playerController.health <= 0)
+        {
+            loseCanvas.SetActive(true);
+        }
+        else
+        {
+            winCanvas.SetActive(true);
+        }
+    }
+
+    private void StartScreen()
+    {
+        if (Input.GetKey(KeyCode.Return))
+        {
+            startCanvas.SetActive(false);
+            StartGame();
+        }
+    }
+
+    private void StartGame()
+    {
+        gameBoard.SetActive(true);
+        waveManager.StartGame();
+        GameObject player = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        playerController = player.GetComponent<PlayerController>();
+        playerController.animated = true;
+        musicPlayer.Play();
+        state = 1;
+    }
+
+    void OnPulseFinished(String type)
+    {
+        if (playerController.PressedCorrectKeyForPulseType(type))
+        {
+            playerController.Success();
+        }
+        else
+        {
+            playerController.Damage();
+        }
+        if (waveManager.finished)
+        {
+            StopGame();
+        }
+    }
 }

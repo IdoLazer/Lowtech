@@ -7,6 +7,10 @@ public class WaveManager : MonoBehaviour
 {
     public Wave[] waves;
 
+    public class PulseFinishedEvent : UnityEngine.Events.UnityEvent<string> {}
+    public PulseFinishedEvent pulseFinishedEvent;
+    public bool finished;
+
     private class WavePulse
     {
         public string type;
@@ -24,9 +28,15 @@ public class WaveManager : MonoBehaviour
     private bool started;
     private WavePulse nextWavePulse;
     private List<WavePulse> wavePulses;
+    private int curWaveIndex = 0;
 
-    void OnAwake()
+    public void Init()
     {
+        if (pulseFinishedEvent == null)
+        {
+            pulseFinishedEvent = new PulseFinishedEvent();
+        }
+        wavePulses = new List<WavePulse>();
         foreach (Wave wave in waves)
         {
             waveByType.Add(wave.type, wave);
@@ -34,39 +44,60 @@ public class WaveManager : MonoBehaviour
             {
                 wavePulses.Add(new WavePulse(wave.type, timeStamp));
             }
+            wave.Init(this);
         }
         wavePulses.Sort((x, y) => x.timeStamp.CompareTo(y.timeStamp));
+    }
+
+    public void StartGame()
+    {
+        curWaveIndex = 0;
+        started = true;
+        finished = false;
+        startTime = Time.time;
         if (wavePulses.Count > 0)
         {
-            nextWavePulse = wavePulses[0];
-            wavePulses.RemoveAt(0);
+            nextWavePulse = wavePulses[curWaveIndex];
+            curWaveIndex += 1;
         }
+    }
+
+    public void StopGame()
+    {
+        started = false;
+    }
+
+    internal void PulseFinished(string type, bool isLastPulse)
+    {
+        if (isLastPulse)
+        {
+            finished = true;
+        }
+        pulseFinishedEvent.Invoke(type);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!started)
+        if (!started || finished || nextWavePulse == null)
             return;
         if (Time.time - startTime >= nextWavePulse.timeStamp)
         {
-            SendPulse(nextWavePulse.type);
-            if (wavePulses.Count > 0)
+            SendPulse(nextWavePulse.type, wavePulses.Count == curWaveIndex);
+            if (wavePulses.Count > curWaveIndex)
             {
-                nextWavePulse = wavePulses[0];
-                wavePulses.RemoveAt(0);
+                nextWavePulse = wavePulses[curWaveIndex];
+                curWaveIndex += 1;
+            }
+            else
+            {
+                nextWavePulse = null;
             }
         }
     }
 
-    public void SendPulse(string type)
+    public void SendPulse(string type, bool isLastPulse)
     {
-        waveByType[type].SendPulse();
-    }
-
-    public void Start()
-    {
-        started = true;
-        startTime = Time.time;
+        waveByType[type].SendPulse(isLastPulse);
     }
 }

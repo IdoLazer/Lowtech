@@ -13,5 +13,13 @@ MonoBehaviour:
   m_Name: Wave 3
   m_EditorClassIdentifier: 
   type: 3
-  timeStamps: []
-  prefab: {fileID: 1153769611102711168, guid: 3bbb865c1ba1a2d4eba818a873b0e0c4, type: 3}
+  timeStamps:
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  prefab: {fileID: 1153769611102711168, guid: e9a4378ba40cf434094fa6b25622f1e4, type: 3}
+  onPulseEndEvent:
+    m_PersistentCalls:
+      m_Calls: []

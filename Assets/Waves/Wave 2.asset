@@ -13,5 +13,18 @@ MonoBehaviour:
   m_Name: Wave 2
   m_EditorClassIdentifier: 
   type: 2
-  timeStamps: []
-  prefab: {fileID: 1153769611102711168, guid: d4b7fbc7eb09eca4981af4ac4dd8e034, type: 3}
+  timeStamps:
+  - 1.5
+  - 2.5
+  - 3.5
+  - 4.5
+  - 5.5
+  - 6.5
+  - 7.5
+  - 8.5
+  - 9.5
+  - 10.5
+  prefab: {fileID: 1153769611102711168, guid: bf6e6175ce7ef4b4ca51f1faab6e3b8e, type: 3}
+  onPulseEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
