@@ -141,7 +141,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         waveManager.StopGame();
         gameBoard.SetActive(false);
-        Destroy(playerController.gameObject);
+        if (playerController != null)
+        {
+            Destroy(playerController.gameObject);
+        }
         state = 2;
         gameEndedEvent.Invoke();
         if (lose)
