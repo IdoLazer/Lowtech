@@ -98,10 +98,15 @@ MonoBehaviour:
   typeTwoKey: 275
   typeThreeKey: 32
   errorMargin: 0.2
-  health: 3
+  health: 4
   animated: 0
   streakBonus: 10
-  maxHealth: 5
+  maxHealth: 4
+  runTimeAnimators:
+  - {fileID: 9100000, guid: 40306d275c1ad7349abb395b8d86f231, type: 2}
+  - {fileID: 9100000, guid: 4e1bca2c72d028a47b7f9e5447ab5cb2, type: 2}
+  - {fileID: 9100000, guid: 9371fb6f16c1563408af3e81e94cee92, type: 2}
+  - {fileID: 9100000, guid: 57cd22130a019e24485863c1bc7c7318, type: 2}
 --- !u!95 &1318460266
 Animator:
   serializedVersion: 3
@@ -112,7 +117,7 @@ Animator:
   m_GameObject: {fileID: 5834408512198894045}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 40306d275c1ad7349abb395b8d86f231, type: 2}
+  m_Controller: {fileID: 9100000, guid: 57cd22130a019e24485863c1bc7c7318, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

@@ -22,7 +22,7 @@ public class WavePulseController : MonoBehaviour
         {
             parent.FinishPulse(isLastPulse);
         }
-        Destroy(gameObject);
+        StartCoroutine(GameManager.DestroyWithDelay(gameObject, 0.5f));
     }
 
     public void DestroyPulse()

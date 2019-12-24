@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +13,8 @@ public class PlayerController : MonoBehaviour
     public int health = 3;
     public bool animated = false;
     public int streakBonus = 10;
-    public int maxHealth = 5;
+    public int maxHealth = 4;
+    public RuntimeAnimatorController[] runTimeAnimators;
 
 
     private Dictionary<string, KeyCode> waveTypeToKeyDict;
@@ -25,6 +27,7 @@ public class PlayerController : MonoBehaviour
     {
         startHealth = health;
         animator = GetComponent<Animator>();
+        animator.runtimeAnimatorController = runTimeAnimators[Mathf.Clamp(health - 1, 0, runTimeAnimators.Length - 1)];
         waveTypeToKeyDict = new Dictionary<string, KeyCode>()
         {
             {"1", typeOneKey }, {"2", typeTwoKey }, {"3", typeThreeKey}
@@ -76,6 +79,7 @@ public class PlayerController : MonoBehaviour
 
     public void Damage()
     {
+        streak = 0;
         if (health > 0)
         {
             health -= 1;
@@ -84,8 +88,19 @@ public class PlayerController : MonoBehaviour
                 animated = false;
                 streak = 0;
             }
+            else
+            {
+                StartCoroutine(ChangeAnimator());
+            }
             animator.SetTrigger("Damage");
+            StartCoroutine(ChangeAnimator());
         }
+    }
+
+    private IEnumerator ChangeAnimator()
+    {
+        yield return new WaitForSeconds(0.3f);
+        animator.runtimeAnimatorController = runTimeAnimators[Mathf.Clamp(health - 1, 0, runTimeAnimators.Length - 1)];
     }
 
     public void Success()
@@ -102,4 +117,5 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Streak");
         }
     }
+
 }
