@@ -28,14 +28,14 @@ RectTransform:
   m_GameObject: {fileID: 1082602339799376675}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.97126, y: 0.97126, z: 0.97126}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 263.9552, y: 148.51547}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -450, y: 354}
   m_SizeDelta: {x: 181.6896, y: 49.968964}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &807609648012194998
@@ -66,8 +66,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: +10
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a1432e159be5b0145bfd3fac43235b6d, type: 2}
-  m_sharedMaterial: {fileID: 7289499264977834928, guid: a1432e159be5b0145bfd3fac43235b6d,
+  m_fontAsset: {fileID: 11400000, guid: b5477ec971401446797a9b15549f3bdf, type: 2}
+  m_sharedMaterial: {fileID: 2897089402787430964, guid: b5477ec971401446797a9b15549f3bdf,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -93,14 +93,14 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 124.16
+  m_fontSizeBase: 124.16
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 257
+  m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -0.026990652, y: 0, z: 0, w: 0}
+  m_margin: {x: -0.026990652, y: 0, z: -767.4007, w: -732.8807}
   m_textInfo:
     textComponent: {fileID: 2192376342881736293}
     characterCount: 3
